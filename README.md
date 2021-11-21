@@ -1,8 +1,8 @@
 _Please note that this is a work in progress container, and it requires some cleanup work._
 
-Docker container for the excellent _libimobiledevice/idevicerestore_ tools "A cross-platform protocol library to communicate with iOS devices" from https://github.com/libimobiledevice ( https://libimobiledevice.org ).
+Docker container for the excellent _libimobiledevice/idevicerestore/ideviceactivate_ tools "A cross-platform protocol library to communicate with iOS devices" from https://github.com/libimobiledevice ( https://libimobiledevice.org ).
 
-This is an unmodified build with an only small patch for compatibility with Alpine's musl vs glibc.
+This is an unmodified build from git (and some git tags).
 
 **Note:** Before running the container make sure that `usbmuxd` is NOT running on the host, better yet remove/uninstall it, as it's started automatically by an udev rule when Apple device is connected/restarted.
 

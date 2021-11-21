@@ -1,7 +1,6 @@
 from alpine:3.12 as build
 
 run mkdir -p /usr/src /run
-#copy *.patch /usr/src/
 copy init.sh /usr/src/
 run chmod +x /usr/src/init.sh
 
