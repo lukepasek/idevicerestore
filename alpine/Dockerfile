@@ -1,7 +1,7 @@
-from alpine:latest as build
+from alpine:3.12 as build
 
 run mkdir -p /usr/src /run
-copy *.patch /usr/src/
+#copy *.patch /usr/src/
 copy init.sh /usr/src/
 run chmod +x /usr/src/init.sh
 
@@ -22,16 +22,22 @@ openssl-dev \
 curl-dev \
 libusb-dev \
 libzip-dev \
-python-dev \
-readline-dev
+python3-dev \
+#python-dev \
+readline-dev \
+libxml2-dev
 
 run git clone https://github.com/libimobiledevice/libplist.git /usr/src/libplist && \
 cd /usr/src/libplist && \
 ./autogen.sh && make && make install 
 
+run git clone https://github.com/libimobiledevice/libimobiledevice-glue.git /usr/src/libimobiledevice-glue && \
+cd /usr/src/libimobiledevice-glue && \
+./autogen.sh && make && make install
+
+
 run git clone https://github.com/libimobiledevice/libusbmuxd.git /usr/src/libusbmuxd && \
 cd /usr/src/libusbmuxd && \
-patch tools/iproxy.c /usr/src/libusbmuxd_tools_iproxy_c.patch && \
 ./autogen.sh && make && make install
 
 run git clone https://github.com/libimobiledevice/libimobiledevice.git /usr/src/libimobiledevice && \
@@ -39,7 +45,7 @@ cd /usr/src/libimobiledevice && \
 ./autogen.sh && make && make install
 
 run git clone https://github.com/libimobiledevice/usbmuxd.git /usr/src/usbmuxd && \
-cd /usr/src/usbmuxd && \
+cd /usr/src/usbmuxd && git checkout 1.1.1 && \
 ./autogen.sh && make && make install
 
 run git clone https://github.com/libimobiledevice/libirecovery.git /usr/src/libirecovery && \
@@ -50,7 +56,12 @@ run git clone https://github.com/libimobiledevice/idevicerestore.git /usr/src/id
 cd /usr/src/idevicerestore && \
 ./autogen.sh && make && make install 
 
-FROM alpine:latest
+run git clone https://github.com/libimobiledevice/libideviceactivation.git /usr/src/libideviceactivation && \
+cd /usr/src/libideviceactivation && \
+./autogen.sh && make && make install
+
+
+FROM alpine:3.12
 COPY --from=build /usr/src/init.sh /init.sh
 COPY --from=build /usr/local/ /usr/local/
 RUN apk update && apk add --no-cache \
@@ -59,6 +70,7 @@ openssl \
 libcurl \
 libusb \
 libzip \
+libxml2 \
 readline
 ENTRYPOINT [ "/bin/bash", "/init.sh" ]
 CMD [ "/bin/bash" ]
